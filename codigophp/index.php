@@ -1,12 +1,38 @@
+<?php
+session_start();
+
+$timerDuration = 5 * 60; 
+
+if (!isset($_SESSION['quiz_start_time']) || isset($_GET['restart'])) {
+    $_SESSION['quiz_start_time'] = time();
+}
+
+$elapsedTime = time() - $_SESSION['quiz_start_time'];
+$remainingTime = max(0, $timerDuration - $elapsedTime);
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['restart_timer'])) {
+    $_SESSION['quiz_start_time'] = time();
+    header("Location: index.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PHP Quiz</title>
-    <link rel="stylesheet" href="quiz.css">
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
+    <?php
+        echo "<div class='timer'>" . gmdate("i:s", $remainingTime) . "</div>";
+        echo "<form class='reset_timer' method='post' action='index.php'>
+                <input type='hidden' name='restart_timer' value='1'>
+                <input type='submit' value='Reiniciar Tiempo'>
+              </form>"
+    ?>
     <form method="post" action="process.php">
         <h1>PHP Quiz</h1>
 
@@ -20,7 +46,7 @@
 
         <!-- Question 2   R:c-->
         <div class="question">
-            <p>2. What is the result of the following code snippet? <code>$x = 5; echo ++$x + $x++;</code></p>
+            <p>2. What is the result of the following code snippet?</br><code>$x = 5;</br>echo ++$x + $x++;</code></p>
             <label><input type="radio" name="q2" value="a"> a) 11</label>
             <label><input type="radio" name="q2" value="b"> b) 12</label>
             <label><input type="radio" name="q2" value="c"> c) 13</label>
@@ -91,7 +117,7 @@
         </div>
 
         <input type="submit" value="Submit">
-        <input type="reset" value="Reset">
+        <a href="index.php?retake=true" class="reset">Repetir cuestionario</a>
     </form>
 </body>
 </html>

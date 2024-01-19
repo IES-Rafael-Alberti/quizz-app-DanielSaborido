@@ -1,8 +1,9 @@
 <?php
 
 require_once 'Quiz.php';
+$shouldRetake = isset($_GET['retake']) && $_GET['retake'] === 'true';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" || $shouldRetake) {
     $questions = array("q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10");
     $missingAnswers = array();
     foreach ($questions as $question) {
@@ -18,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $quiz = new Quiz();
 
         $quiz->addQuestion("What does PHP stand for?", "b");
-        $quiz->addQuestion("What is the result of the following code snippet? '$'x = 5; echo ++'$'x + '$'x++;", "c");
+        $quiz->addQuestion("What is the result of the following code snippet? \$x = 5; echo ++\$x + \$x++;", "c");
         $quiz->addQuestion("How do you declare a static method in a PHP class?", "a");
         $quiz->addQuestion("What is the purpose of the PHP function `htmlspecialchars()`?", "a");
         $quiz->addQuestion("How can you initiate a session in PHP?", "b");
@@ -43,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     echo '<form action="index.php" method="get">
-            <input type="submit" value="Volver al Inicio">
+            <input type="submit" value="Repetir cuestionario">
           </form>';
 } else {
     header("Location: index.php");
