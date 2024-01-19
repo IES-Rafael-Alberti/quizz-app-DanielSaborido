@@ -11,7 +11,8 @@ class Quiz {
     public function calculateScore($userAnswers) {
         $score = 0;
         foreach ($this->questions as $index => $q) {
-            if (isset($userAnswers[$index]) && $userAnswers[$index] == $q['correctAnswer']) {
+            $questionKey = "q" . ($index + 1);
+            if (isset($userAnswers[$questionKey]) && $userAnswers[$questionKey] == $q['correctAnswer']) {
                 $score++;
             }
         }
