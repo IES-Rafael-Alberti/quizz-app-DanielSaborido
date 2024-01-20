@@ -1,11 +1,17 @@
 <?php
 
 require_once 'Quiz.php';
+
+echo "<script>
+        window.localStorage.clear();
+      </script>";
+
 $shouldRetake = isset($_GET['retake']) && $_GET['retake'] === 'true';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" || $shouldRetake) {
     $questions = array("q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10");
     $missingAnswers = array();
+
     foreach ($questions as $question) {
         if (empty($_POST[$question])) {
             $missingAnswers[] = $question;
@@ -13,8 +19,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $shouldRetake) {
     }
 
     if (!empty($missingAnswers)) {
-        echo "<h2>Error: Debes responder todas las preguntas.</h2>";
-        echo "<p>Preguntas sin respuesta: " . implode(", ", $missingAnswers) . "</p>";
+        // Almacena las preguntas sin contestar en localStorage
+        echo "<script>
+                window.localStorage.setItem('unansweredQuestions', JSON.stringify(" . json_encode($missingAnswers) . "));
+              </script>";
+
+        // Redirecciona directamente a index.php
+        header("Location: index.php");
+        exit();
     } else {
         $quiz = new Quiz();
 
@@ -30,22 +42,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $shouldRetake) {
         $quiz->addQuestion("How can you include an external PHP file?", "c");
 
         $userAnswers = $_POST;
-        $score = $quiz->calculateScore($userAnswers);
-        $feedback = $quiz->generateFeedback();
+        $results = array();
 
-        echo "<h2>Resultado del cuestionario:</h2>";
-        echo "<p>Puntuación: $score / 10</p>";
-        echo "<h3>Comentarios:</h3>";
-        echo "<ul>";
-        foreach ($feedback as $comment) {
-            echo "<li>$comment</li>";
+        foreach ($questions as $index => $question) {
+            $questionKey = "q" . ($index + 1);
+
+            if (isset($userAnswers[$questionKey]) && $userAnswers[$questionKey] == $quiz->getCorrectAnswer($index)) {
+                $result = "Correct!";
+            } else {
+                $result = "Incorrect. Correct answer: " . $quiz->getCorrectAnswer($index);
+            }
+
+            $results[$questionKey] = $result;
         }
-        echo "</ul>";
-    }
 
-    echo '<form action="index.php" method="get">
-            <input type="submit" value="Repetir cuestionario">
-          </form>';
+        // Almacena los resultados en localStorage
+        echo "<script>
+                window.localStorage.setItem('quizResults', JSON.stringify(" . json_encode($results) . "));
+              </script>";
+
+        // Redirecciona directamente a index.php
+        header("Location: index.php");
+        exit();
+    }
 } else {
     header("Location: index.php");
     exit();

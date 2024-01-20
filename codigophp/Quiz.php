@@ -25,4 +25,7 @@ class Quiz {
         }
         return $feedback;
     }
+    public function getCorrectAnswer($index) {
+        return $this->questions[$index]['correctAnswer'];
+    }
 }
