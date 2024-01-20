@@ -127,7 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['restart_timer'])) {
         </div>
 
         <input type="submit" value="Submit">
-        <a href="index.php?retake=true" class="reset">Reset Quiz</a>
+        <a href="index.php?retake=true" class="reset" onclick="resetLocalStorage()">Reset Quiz</a>
     </form>
 </body>
 <script>
@@ -154,6 +154,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['restart_timer'])) {
                 }
             }
         }
+    }
+    function resetLocalStorage() {
+        window.localStorage.clear();
     }
 </script>
 </html>

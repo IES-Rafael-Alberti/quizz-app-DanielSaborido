@@ -1,9 +1,8 @@
 <?php
-
 require_once 'Quiz.php';
 
 echo "<script>
-        window.localStorage.clear();
+        window.localStorage.clear()
       </script>";
 
 $shouldRetake = isset($_GET['retake']) && $_GET['retake'] === 'true';
@@ -19,13 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $shouldRetake) {
     }
 
     if (!empty($missingAnswers)) {
-        // Almacena las preguntas sin contestar en localStorage
         echo "<script>
-                window.localStorage.setItem('unansweredQuestions', JSON.stringify(" . json_encode($missingAnswers) . "));
+                window.localStorage.setItem('unansweredQuestions', JSON.stringify(" . json_encode($missingAnswers) . "))
+                window.location.href = 'index.php?results=false'
               </script>";
-
-        // Redirecciona directamente a index.php
-        header("Location: index.php");
         exit();
     } else {
         $quiz = new Quiz();
@@ -56,13 +52,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $shouldRetake) {
             $results[$questionKey] = $result;
         }
 
-        // Almacena los resultados en localStorage
         echo "<script>
-                window.localStorage.setItem('quizResults', JSON.stringify(" . json_encode($results) . "));
+                window.localStorage.setItem('quizResults', JSON.stringify(" . json_encode($results) . "))
+                window.location.href = 'index.php?results=true'
               </script>";
-
-        // Redirecciona directamente a index.php
-        header("Location: index.php");
         exit();
     }
 } else {
