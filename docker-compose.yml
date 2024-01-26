@@ -6,24 +6,34 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./codigophp:/usr/share/nginx/html
+      - ./src:/usr/share/nginx/html
     links:
       - fpm
 
   fpm:
     image: fjortegan/php-xdebug
     volumes:
-      - ./codigophp:/var/www/html
-    # Sólo en máquinas Linux, comentar estas dos líneas en otros sistemas de lusers
+      - ./src:/var/www/html
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    command: /bin/bash -c "apt-get update && apt-get install -y \
+      && docker-php-ext-install mysqli \
+      && docker-php-ext-enable mysqli \
+      && php-fpm"
 
   db:
-    image: mariadb
-    volumes:
-      - ./db-data:/var/lib/mysql/
-    environment:
-      MYSQL_ROOT_PASSWORD: pestillo
+      image: mysql
+      command: --default-authentication-plugin=caching_sha2_password
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: pestillo
+        MYSQL_DATABASE: db
+        MYSQL_USER: esclava
+        MYSQL_PASSWORD: pestillo
+      ports:
+        - "3306:3306"
+      volumes:
+        - ./initSQL:/docker-entrypoint-initdb.d
 
   phpmyadmin:
     image: phpmyadmin
@@ -31,4 +41,3 @@ services:
       - "8080:80"
     environment:
       - PMA_ARBITRARY=1
-
