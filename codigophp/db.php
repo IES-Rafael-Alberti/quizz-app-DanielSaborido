@@ -1,5 +1,5 @@
 <?php
-$servername = "db";
+$servername = "quizzes";
 $username = "esclava";
 $password = "pestillo";
 $dbname = "quizzes";

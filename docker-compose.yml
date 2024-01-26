@@ -6,20 +6,20 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./src:/usr/share/nginx/html
+      - ./codigophp:/usr/share/nginx/html
     links:
       - fpm
 
   fpm:
     image: fjortegan/php-xdebug
     volumes:
-      - ./src:/var/www/html
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command: /bin/bash -c "apt-get update && apt-get install -y \
-      && docker-php-ext-install mysqli \
-      && docker-php-ext-enable mysqli \
-      && php-fpm"
+      - ./codigophp:/var/www/html
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+    # command: /bin/bash -c "apt-get update && apt-get install -y \
+    #   && docker-php-ext-install mysqli \
+    #   && docker-php-ext-enable mysqli \
+    #   && php-fpm"
 
   db:
       image: mysql
@@ -27,7 +27,7 @@ services:
       restart: always
       environment:
         MYSQL_ROOT_PASSWORD: pestillo
-        MYSQL_DATABASE: db
+        MYSQL_DATABASE: quizzes
         MYSQL_USER: esclava
         MYSQL_PASSWORD: pestillo
       ports:
