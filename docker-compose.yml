@@ -24,7 +24,6 @@ services:
   db:
       image: mysql
       command: --default-authentication-plugin=caching_sha2_password
-      restart: always
       environment:
         MYSQL_ROOT_PASSWORD: pestillo
         MYSQL_DATABASE: quizzes
