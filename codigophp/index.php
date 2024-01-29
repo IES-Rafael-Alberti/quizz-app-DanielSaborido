@@ -15,7 +15,7 @@ if (!isset($_SESSION['quiz_start_time']) || isset($_GET['restart'])) {
             $questions[] = $row;
         }
     } else {
-        die("No hay preguntas disponibles.");
+        die("No questions available.");
     }
 }
 
@@ -45,9 +45,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['restart_timer'])) {
                 <input type='submit' value='Reset Time'>
               </form>"
     ?>
+    <a href="add_questions.php">Add questions</a>
+    <a href="delete_questions.php">Modify questions</a>
+    <a href="users.php">Users</a>
+    <a href="logout.php">Logout</a>
     <form method="post" action="process.php">
+        <?php
+            if (isset($_SESSION['username'])) {
+                echo "<h1>Hola: " . $_SESSION['username'] . "</h1>";
+            }
+        ?>
         <h1>PHP Quiz</h1>
-
         <?php
         foreach ($questions as $index => $question) {
             $questionKey = "q" . ($index + 1);
